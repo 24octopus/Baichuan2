@@ -13,13 +13,11 @@ from transformers import AutoTokenizer
 import numpy as np
 
 class Baichuan2:
-    def __init__(self, handle, engine, tokenizer):
 
+    def __init__(self, handle, engine, tokenizer):
         # load tokenizer
         self.sp = tokenizer
         self.handle = handle
-        # warm up
-        # self.sp.decode([0]) 
         self.EOS = self.sp.eos_token_id
 
         # load bmodel
@@ -38,7 +36,6 @@ class Baichuan2:
         self.name_blocks = ["block_"+str(i) for i in range(self.NUM_LAYERS)]
         self.name_blocks_cache = ["block_cache_"+str(i) for i in range(self.NUM_LAYERS)]
 
-        # name, input_idx, shape, 
         # tensors:
         # forward_first: embedding_tensor
         self.first_embed_input = self.init_sail_tensor(self.name_embed, 0, [1, self.MAX_LEN])
@@ -230,17 +227,14 @@ class Baichuan2:
 
     def chat_stream(self, input, history):
         input_tokens = self._make_context(input, history=[], role="user")
-        # input_tokens = self.sp.build_chat_input(input, history=[], role="user")
         if (len(input_tokens) > self.MAX_LEN - 10):
             yield 'input length is too long'
             return
         tok_num = 0
         tokens = self._make_context(input, history=history, role="user")
-        # tokens = self.sp.build_chat_input(input, history=history, role="user")
         while (len(tokens) > self.MAX_LEN / 2):
             history = history[1:]
             tokens = self._make_context(input, history=history, role="user")
-            # tokens = self.sp.build_chat_input(input, history=history, role="user")
         first_start = time.time()
         pre_token = self.forward_first(tokens)
         first_end = time.time()
