@@ -12,26 +12,6 @@ import time
 from transformers import AutoTokenizer
 import numpy as np
 
-#convert sail_dtype to numpy dtype
-def type_convert(sail_dtype):
-    if sail_dtype == sail.Dtype.BM_FLOAT32:
-        return np.float32
-    if sail_dtype == sail.Dtype.BM_FLOAT16:
-        return np.float16
-    if sail_dtype == sail.Dtype.BM_INT32:
-        return np.int32
-    
-    raise TypeError("only support float32 and int32 right now")
-
-def fp16_cast(arr:np.ndarray): #这个接口的作用在于把np.float16假冒成np.uint16传进Tensor，sail update_data如果能接收传输二进制，那就不需要这个了。
-    """
-    reinterpret an array with int16 instead of float16, because pybind11 do not support float16.
-    """
-    if arr.dtype == np.float16:
-        return arr.view(np.uint16)
-    else:
-        return arr
-    
 class Baichuan2:
     def __init__(self, handle, engine, tokenizer):
 
@@ -161,11 +141,8 @@ class Baichuan2:
 
     def forward_first(self, token):
         input_ids = np.zeros(self.MAX_LEN, dtype=np.int32)  # Initialize input_ids with zeros
-        # input_ids = np.zeros(self.MAX_LEN, type_convert(self.first_embed_input["dtype"]))  # Initialize input_ids with zeros
         position_id = np.arange(self.MAX_LEN, dtype=np.int32)  # Use arange for position_id
-        # position_id = np.arange(self.MAX_LEN, type_convert(self.first_pid["dtype"]))  # Use arange for position_id
         attention_mask = np.full((self.MAX_LEN, self.MAX_LEN), self.ATTENTION_MASK, dtype=np.float16)  # Initialize attention_mask with self.ATTENTION_MASK
-        # attention_mask = np.full((self.MAX_LEN, self.MAX_LEN), self.ATTENTION_MASK, type_convert(self.first_attention["dtype"]))  # Initialize attention_mask with self.ATTENTION_MASK
 
         self.token_length = len(token)  
         input_ids[:self.token_length] = token  # Set the first part of input_ids to the token IDs
