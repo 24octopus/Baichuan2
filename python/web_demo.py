@@ -1,6 +1,5 @@
 import streamlit as st
 import sophon.sail as sail
-from chatglm3 import ChatGLM3
 from baichuan2 import Baichuan2
 from transformers import AutoTokenizer
 
