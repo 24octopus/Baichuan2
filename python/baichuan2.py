@@ -10,7 +10,6 @@ import sophon.sail as sail
 import argparse
 import time
 from transformers import AutoTokenizer
-import sentencepiece as spm
 import numpy as np
 
 #convert sail_dtype to numpy dtype
@@ -41,7 +40,6 @@ class Baichuan2:
         self.handle = handle
         # warm up
         # self.sp.decode([0]) 
-        # self.EOS = self.sp.eos_id
         self.EOS = self.sp.eos_token_id
 
         # load bmodel
@@ -283,13 +281,6 @@ class Baichuan2:
                     is_emoji = False
             else: 
                 yield self.sp.decode([token])
-            # pre_ids = [pre_token]
-            # ids = [pre_token, token]
-            # pre_word = self.sp.decode(pre_ids)
-            # word = self.sp.decode(ids)
-            # diff = word[len(pre_word):]
-            # # history += diff
-            # print(diff, flush=True, end='')
 
             self.token_length += 1
             tok_num += 1
@@ -307,7 +298,6 @@ class Baichuan2:
 def argsparser():
     parser = argparse.ArgumentParser(prog=__file__)
     parser.add_argument('--bmodel', type=str, default='../models/BM1684X/baichuan2-7b_int8_1dev.bmodel', help='path of bmodel')
-    # parser.add_argument('--token', type=str, default='../model/tokenizer.model', help='path of tokenizer')
     parser.add_argument('--token', type=str, default='./token_config/', help='path of tokenizer')
     parser.add_argument('--dev_ids', nargs='+', type=int, default=[0], help='dev id list, split by space')
     args = parser.parse_args()
@@ -333,8 +323,6 @@ def app(client):
 def main(args):
     handle = sail.Handle(args.dev_ids[0])    # 传入list，只用第一个
     tokenizer = AutoTokenizer.from_pretrained(args.token, trust_remote_code=True)
-    # tokenizer = spm.SentencePieceProcessor(model_file=args.token)
-    # engine = sail.Engine(args.bmodel, args.dev_id, sail.IOMode.DEVIO)
     engine = sail.EngineLLM(args.bmodel, args.dev_ids)
     client = Baichuan2(handle, engine, tokenizer)
     app(client)
