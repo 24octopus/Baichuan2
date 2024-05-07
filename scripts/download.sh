@@ -17,9 +17,9 @@ then
     mkdir -p ../models/
     mkdir -p ../models/BM1684X
     pushd ../models/BM1684X
-    python3 -m dfss --url=open@sophgo.com:sophon-demo/ChatGLM3/models/BM1684X/chatglm3-6b_fp16.bmodel
-    python3 -m dfss --url=open@sophgo.com:sophon-demo/ChatGLM3/models/BM1684X/chatglm3-6b_int8.bmodel
-    python3 -m dfss --url=open@sophgo.com:sophon-demo/ChatGLM3/models/BM1684X/chatglm3-6b_int4.bmodel
+    # python3 -m dfss --url=open@sophgo.com:sophon-demo/Baichuan2/models/BM1684X/baichuan2-7b_fp16.bmodel
+    python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/baichuan2-7b_int8_1dev.bmodel
+    python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/baichuan2-7b_int4_1dev.bmodel
     popd
     echo "models download!"
 else
@@ -29,7 +29,7 @@ fi
 if [ ! -d "../python/token_config" ];
 then
     pushd ../python
-    python3 -m dfss --url=open@sophgo.com:sophon-demo/ChatGLM3/token_config.zip
+    python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/token_config.zip
     unzip token_config.zip
     rm token_config.zip
     popd

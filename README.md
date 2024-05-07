@@ -1,4 +1,4 @@
-# ChatGLM3
+# Baichuan2
 
 ## 目录
   - [1. 简介](#1-简介)
@@ -9,7 +9,7 @@
   - [3. 程序性能测试](#6-程序性能测试)
 
 ## 1. 简介
-ChatGLM3-6B 是开源中英双语对话模型 ChatGLM-6B 的第三代版本，关于它的特性，请前往源repo查看：https://huggingface.co/THUDM/chatglm3-6b。本例程对ChatGLM3-6B进行移植，使之能在SOPHON BM1684X上进行推理测试。
+Baichuan2-7B 是开源中英双语对话模型 Baichuan-7B 的第二代版本，关于它的特性，请前往源repo查看：[Baichuan2-7B-Chat](https://huggingface.co/baichuan-inc/Baichuan2-7B-Chat)。本例程对Baichuan2-7B进行移植，使之能在SOPHON BM1684X上进行推理测试。
 
 该例程支持在V23.07.01(libsophon_0.4.9)及以上的SDK上运行，支持在插有1684X加速卡(SC7系列)的x86主机上运行，也可以在1684X SoC设备（如SE7、SM7、Airbox等）上运行。在SoC上运行需要额外进行环境配置，请参照[运行环境准备](#3-运行环境准备)完成环境部署。
 
@@ -22,7 +22,7 @@ ChatGLM3-6B 是开源中英双语对话模型 ChatGLM-6B 的第三代版本，�
 
 ## 3. 运行环境准备
 在PCIe上无需修改内存，以下为soc模式相关：
-对于1684X系列设备（如SE7/SM7），都可以通过这种方式完成环境准备，使得满足chatGLM3运行条件。首先，在1684x SoC环境上，参考如下命令修改设备内存。
+对于1684X系列设备（如SE7/SM7），都可以通过这种方式完成环境准备，使得满足Baichuan2运行条件。首先，在1684x SoC环境上，参考如下命令修改设备内存。
 ```bash
 cd /data/
 mkdir memedit && cd memedit
@@ -59,35 +59,35 @@ chmod -R +x scripts/
 
 ```bash
 ├── docs
-│   └── ChatGLM3_Export_Guide.md    #ChatGLM3 onnx导出和bmodel编译指南
+│   └── Baichuan2_Export_Guide.md    #Baichuan2 onnx导出和bmodel编译指南
 ├── models
 │   └── BM1684X                     #download.sh下载的bmodel
-│       ├── chatglm3-6b_fp16.bmodel
-│       ├── chatglm3-6b_int4.bmodel
-│       └── chatglm3-6b_int8.bmodel
+│       ├── baichuan2-7b_fp16.bmodel
+│       ├── baichuan2-7b_int4.bmodel
+│       └── baichuan2-7b_int8_1dev.bmodel
 ├── python
-│   ├── chatglm3.py                 #ChatGLM3 python推理脚本
+│   ├── baichuan2.py                 #Baichuan2 python推理脚本
 │   ├── README.md                   #python例程执行指南
 │   ├── requirements.txt            #python例程的依赖模块
 │   └── token_config                #download.sh下载的tokenizer
 │       ├── tokenization_chatglm.py
 │       ├── tokenizer_config.json
 │       └── tokenizer.model
-├── README.md                       #ChatGLM3例程指南
+├── README.md                       #Baichuan2例程指南
 ├── scripts                         
 │   ├── download.sh                 #下载脚本
 │   └── gen_bmodel.sh               #模型编译脚本
 └── tools
-    ├── chatglm3-6b                 #修改过的ChatGLM3源码
+    ├── baichuan2-7b                 #修改过的Baichuan2源码
     │   ├── config.json
     │   └── modeling_chatglm.py
-    └── export_onnx.py              #ChatGLM3导出onnx脚本。
+    └── export_onnx.py              #Baichuan2导出onnx脚本。
 ```
 
 
 ### 4.2 自行编译模型
 
-此部分请参考[ChatGLM3模型导出与编译](./docs/ChatGLM3_Export_Guide.md)
+此部分请参考[Baichuan2模型导出与编译](./docs/Baichuan2_Export_Guide.md)
 
 ## 5. 例程测试
 
@@ -98,9 +98,9 @@ chmod -R +x scripts/
 这里的测试输入为："请使用C++写一段冒泡排序算法。"
 |    测试平台   |     测试程序       |           测试模型             |first token latency(s)|token per second(tokens/s)| 
 | -----------  | ---------------- | ---------------------------     | --------------------- | ----------------------- | 
-| SE7-32       | chatglm3.py      | chatglm3-6b_f16.bmodel          |    1.408              |    4.067          | 
-| SE7-32       | chatglm3.py      | chatglm3-6b_int8.bmodel         |    1.116              |    8.184          | 
-| SE7-32       | chatglm3.py      | chatglm3-6b_int4.bmodel         |    1.121              |    12.822         | 
+| SE7-32       | baichuan2.py      | baichuan2-7b_f16.bmodel          |    1.408              |    4.067          | 
+| SE7-32       | baichuan2.py      | baichuan2-7b_int8.bmodel         |    1.116              |    8.184          | 
+| SE7-32       | baichuan2.py      | baichuan2-7b_int4.bmodel         |    1.121              |    12.822         | 
 
 > **测试说明**：  
 > 1. 性能测试结果具有一定的波动性，建议多次测试取平均值；

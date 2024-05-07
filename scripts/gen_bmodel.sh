@@ -1,19 +1,23 @@
 #!/bin/bash
-# set -ex
-model_dir=$(dirname $(readlink -f "$0"))
-pushd $model_dir
-
+set -ex
 models=
 mode="fp16"
+folder="tmp"
 num_device=1
-quantize_args="--quantize F16"
-quantio_args=""
-quant_io=1
+mode_args=""
 device_args=""
-target="bm1684x"
-target_dir="BM1684X"
-out_model_name=chatglm3-6b
-num_layers=27
+quantize_args="--quantize F16"
+name=""
+num_layers=
+out_model=$name.bmodel
+
+if [ -z "$name" ]; then
+    name="baichuan2-7b"
+    echo "Compile Baichuan2-7B"
+else
+    name="baichuan2-13b"
+    echo "Compile Baichuan2-13B"
+fi
 
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -27,14 +31,9 @@ while [[ $# -gt 0 ]]; do
             num_device="$2"
             shift 2
             ;;
-        --target)
-            target=${2,,}
-            target_dir=${target^^}
+        --name)
+            name="$2"
             shift 2
-            ;;
-        --no_quant_io)
-            quant_io=0
-            shift 1
             ;;
         *)
             echo "Invalid option: $key" >&2
@@ -47,136 +46,143 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-out_model_name="${out_model_name}_${mode}"
-
 if [ x$mode == x"int8" ]; then
     quantize_args="--quantize W8F16"
 elif [ x$mode == x"bf16" ] || [ x$mode == x"fp16" ]; then
     quantize_args="--quantize F16"
 elif [ x$mode == x"int4" ]; then
-    quantize_args="--quantize W4F16 --q_group_size 64"
+    quantize_args="--quantize W4BF16 --q_group_size 64"
 else
     echo "Error, unknown quantize mode, only support fp16/bf16/int8/int4"
     exit 1
 fi
 
-if [ $quant_io == 1 ]; then
-    quantize_args="$quantize_args --quant_input --quant_output"
-    quantio_args="--quant_input --quant_output"
+if [ x$name == x"baichuan2-7b" ] || [ x$name == x"baichuan2-13b" ]; then
+    if [ x$name == x"baichuan2-7b" ]; then
+        num_layers=32
+    else
+        num_layers=40
+    fi
 fi
 
 if [ x$num_device != x1 ]; then
     device_args="--num_device $num_device"
-    out_model_name="${out_model_name}_${num_device}dev"
+    out_model=$name'_'$mode'_'$num_device'dev.bmodel'
+else
+    out_model=$name'_'$mode'_1dev.bmodel'
 fi
 
-out_model="${out_model_name}.bmodel"
-
-outdir=tmp/embedding
+outdir=${folder}/embedding
 mkdir -p $outdir
 pushd $outdir
 
+seqlen=512
 model_transform.py \
     --model_name embedding \
-    --model_def $model_dir/../models/onnx/embedding.onnx \
-    --mlir embedding.mlir
+    --model_def ../embedding.onnx \
+    --input_shapes [[1,$seqlen]] \
+    --mlir embedding_${seqlen}.mlir
 
 
 model_deploy.py \
-    --mlir embedding.mlir \
+    --mlir embedding_$seqlen.mlir \
     --quantize F16 \
     --chip bm1684x \
-    $quantio_args \
-    --model embedding.bmodel
+    $device_args \
+    --model embedding_${seqlen}_f16.bmodel
 
 model_transform.py \
     --model_name embedding_cache \
-    --model_def $model_dir/../models/onnx/embedding.onnx \
+    --model_def ../embedding.onnx \
     --input_shapes [[1,1]] \
-    --mlir embedding_cache.mlir
+    --mlir embedding_1.mlir
 
 
 model_deploy.py \
-    --mlir embedding_cache.mlir \
+    --mlir embedding_1.mlir \
     --quantize F16 \
     --chip bm1684x \
-    $quantio_args \
-    --model embedding_cache.bmodel
+    $device_args \
+    --model embedding_1_f16.bmodel
 
 rm *.npz
 
-models=$models' '$outdir'/embedding.bmodel '$outdir'/embedding_cache.bmodel '
+models=$models' '$outdir'/embedding_1_f16.bmodel '$outdir'/embedding_'$seqlen'_f16.bmodel '
 
 popd
 
 echo $models
 
-outdir=tmp/$mode"_"$num_device"dev"/lm_head
+outdir=${folder}/$mode"_"$num_device"dev"/lm_head
 mkdir -p $outdir
 pushd $outdir
 
 model_transform.py \
     --model_name lm_head \
-    --model_def $model_dir/../models/onnx/lm_head.onnx \
+    --model_def ../../lm_head.onnx \
     --mlir lm_head.mlir
+
 
 model_deploy.py \
     --mlir lm_head.mlir \
     --quantize F16 \
     --chip bm1684x \
-    $device_args \
-    $quantio_args \
     --model lm_head.bmodel
+
+rm *.npz
 
 models=${models}${outdir}'/lm_head.bmodel '
 popd
 
 echo $models
 
-outdir=tmp/$mode"_"$num_device"dev"/block
+outdir=${folder}/$mode"_"$num_device"dev"/block
 mkdir -p $outdir
 
 pushd $outdir
 mkdir -p $outdir
 
-for ((i=0; i<=$num_layers; i++)); do
+for ((i=0; i<$num_layers; i++))
+do
 
-    model_transform.py \
-        --model_name block_$i \
-        --model_def $model_dir/../models/onnx/block_$i.onnx \
-        --mlir block_$i.mlir
+model_transform.py \
+    --model_name block_$i \
+    --model_def ../../block_$i.onnx \
+    --mlir block_$i.mlir
 
-    model_deploy.py \
-        --mlir block_$i.mlir \
-        $quantize_args \
-        --chip bm1684x \
-        $device_args \
-        --model block_$i.bmodel
+model_deploy.py \
+    --mlir block_$i.mlir \
+    $quantize_args \
+    --chip bm1684x \
+    --quant_output \
+    --quant_output_list 2,3 \
+    $device_args \
+    --model block_$i.bmodel
 
-    model_transform.py \
-        --model_name block_cache_$i \
-        --model_def $model_dir/../models/onnx/block_cache_$i.onnx \
-        --mlir block_cache_$i.mlir
+model_transform.py \
+    --model_name block_cache_$i \
+    --model_def ../../block_cache_${i}.onnx \
+    --mlir block_cache_$i.mlir
 
-    model_deploy.py \
-        --mlir block_cache_$i.mlir \
-        $quantize_args \
-        --chip bm1684x \
-        $device_args \
-        --model block_cache_$i.bmodel
-        
-    rm *.npz
+model_deploy.py \
+    --mlir block_cache_$i.mlir \
+    $quantize_args \
+    --chip bm1684x \
+    --quant_input \
+    --quant_output \
+    --quant_input_list 4,5 \
+    --quant_output_list 2,3 \
+    $device_args \
+    --model block_cache_$i.bmodel
 
-    models=${models}${outdir}'/block_'$i'.bmodel '$outdir'/block_cache_'$i'.bmodel '
+rm *.npz
+# rm ../../block_$i.onnx
+# rm ../../block_cache_$i.onnx
+
+models=${models}${outdir}'/block_'$i'.bmodel '$outdir'/block_cache_'$i'.bmodel '
 
 done
 popd
 echo $models
 
-outdir=../models/$target_dir
-if [ ! -d $outdir ]; then
-    mkdir -p $outdir
-fi
-model_tool --combine $models -o $outdir/$out_model
-
-popd #model_dir
+model_tool --combine $models -o $out_model
