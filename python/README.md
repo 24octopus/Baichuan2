@@ -60,7 +60,7 @@ pip3 install -r python/requirements.txt
 ```bash
 pip3 install dfss --upgrade #安装dfss依赖
 
-#x86 pcie, py39
+#x86 pcie, py38
 python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/sail/sophon-3.8.0-py3-none-any.whl 
 pip3 install sophon-3.8.0-py3-none-any.whl
 ```
@@ -81,7 +81,7 @@ pip3 install -r python/requirements.txt
 由于本例程需要的sophon-sail版本为3.8.0，这里提供一个可用的sophon-sail whl包，SoC环境可以通过下面的命令下载：
 ```bash
 pip3 install dfss --upgrade
-python3 -m dfss --url=open@sophgo.com:sophon-demo/ChatGLM3/sail/soc/sophon_arm-3.7.0-py3-none-any.whl #arm soc, py39
+python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/sail/sophon_arm-3.8.0-py3-none-any.whl #arm soc, py38
 ```
 如果您需要其他版本的sophon-sail，或者遇到glibc版本问题，可以通过以下命令下载源码，并参考[sophon-sail编译安装指南](https://doc.sophgo.com/sdk-docs/v23.07.01/docs_latest_release/docs/sophon-sail/docs/zh/html/1_build.html#)自己编译sophon-sail。
 ```bash
