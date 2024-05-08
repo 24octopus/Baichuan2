@@ -17,13 +17,13 @@ python目录下提供了一系列Python例程，具体情况如下：
 
 | 序号 |  Python例程       | 说明                                |
 | ---- | ---------------- | -----------------------------------  |
-| 1    | chatglm3.py     | 使用SAIL推理 |
+| 1    | baichuan2.py     | 使用SAIL推理 |
 | 2    | web_demo.py     | 支持多会话的web demo |
 
 
 ## 1. 环境准备
 ### 1.1 x86/arm PCIe平台
-
+*** 需要最新的sophon-sail才能运行sail.EngineLLM，版本为93.8.0，而它依赖于0.5.1版本的libsophon。***
 如果您在x86/arm平台安装了PCIe加速卡（如SC系列加速卡），并使用它测试本例程，您需要安装libsophon、sophon-opencv、sophon-ffmpeg，具体请参考[x86-pcie平台的开发和运行环境搭建](../../../docs/Environment_Install_Guide.md#3-x86-pcie平台的开发和运行环境搭建)或[arm-pcie平台的开发和运行环境搭建](../../../docs/Environment_Install_Guide.md#5-arm-pcie平台的开发和运行环境搭建)。
 
 此外您还需要安装其他第三方库：
@@ -67,17 +67,17 @@ python例程不需要编译，可以直接运行，PCIe平台和SoC平台的测�
 ### 2.1 参数说明
 
 ```bash
-usage: chatglm3.py [--bmodel BMODEL] [--token TOKEN] [--dev_id DEV_ID]
+usage: baichuan2.py [--bmodel BMODEL] [--token TOKEN] [--dev_ids DEV_ID]
 --bmodel: 用于推理的bmodel路径；
 --token: tokenizer目录路径；
---dev_id: 用于推理的tpu设备id；
+--dev_ids: 用于推理的tpu设备id，多个设备id用空格隔开；
 --help: 输出帮助信息
 ```
 
 ### 2.2 使用方式
 
 ```bash
-python3 python/chatglm3.py --bmodel models/BM1684X/chatglm3-6b_fp16.bmodel --token python/token_config --dev_id 0 
+python3 python/baichuan2.py --bmodel models/BM1684X/baichuan2-7b_int8_1dev.bmodel --token python/token_config --dev_ids 0 
 ```
 在读入模型后会显示"Question:"，然后输入就可以了。模型的回答会出现在"Answer"中。结束对话请输入"exit"。
 
@@ -107,10 +107,10 @@ streamlit run python/web_demo.py
 ![diagram](../pics/web_demo.png)
 
 ### 3.2 程序流程图
-通过将同一个sail.Engine, tokenizer传入不同ChatGLM3实例对象中，从而实现多会话同时推理的能力，具体流程如下：
+通过将同一个sail.EngineLLM, tokenizer传入不同Baichuan2实例对象中，从而实现多会话同时推理的能力，具体流程如下：
 ![diagram](../pics/multi_session.jpg)
 
-其中chat_stream接收用户输入的问题input和历史消息history，通过sail.Engine进行推理，流式返回生成的文本，具体过程如下：
+其中chat_stream接收用户输入的问题input和历史消息history，通过sail.EngineLLM进行推理，流式返回生成的文本，具体过程如下：
 ![diagram](../pics/chat_stream.png)
 
 ### 3.3 程序二次开发说明
@@ -118,34 +118,34 @@ streamlit run python/web_demo.py
 查看web_demo.py的7-9行，参数说明如下：
 ```python
 token_path = './python/token_config'
-bmodel_path = './models/BM1684X/chatglm3-6b_int4.bmodel'
-dev_id = 0
+bmodel_path = './models/BM1684X/baichuan2-7b_int8_1dev.bmodel'
+dev_id = [0]
 ```
 ```bash
 bmodel_path: 用于推理的bmodel路径；
 token_path: tokenizer目录路径；
-dev_id: 用于推理的tpu设备id；
+dev_id: 用于推理的tpu设备id列表；
 ```
 通过修改对应参数可以改变demo的bmodel，tokenizer，dev_id。
 
-当用户输入问题并提交后，程序会创建一个ChatGLM3实例，并开始推理过程，代码在web_demo.py中的52和57行
+当用户输入问题并提交后，程序会创建一个Baichuan2实例，并开始推理过程，代码在web_demo.py中的52和57行
 ```python
-client = ChatGLM3(st.session_state.handle, st.session_state.engine, st.session_state.tokenizer)
+client = Baichuan2(st.session_state.handle, st.session_state.engine, st.session_state.tokenizer)
 ```
 ```python
 stream = client.chat_stream(input = prompt,history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages])
 ```
 
-ChatGLM3实例的创建需要接收sail.Handle，sail.Engine，tokenizer，通过上面的bmodel_path， token_path， dev_id三个参数来控制。并实现了一个推理接口`chat_stream(input, history)`  input是用户输入的问题，history是历史消息。例如：
+Baichuan2实例的创建需要接收sail.Handle，sail.EngineLLM，tokenizer，通过上面的bmodel_path， token_path， dev_id三个参数来控制。并实现了一个推理接口`chat_stream(input, history)`  input是用户输入的问题，history是历史消息。例如：
 ```python
 input='用c++实现一个冒泡排序'
 history = [
     {"role": "user", "content": "你好"},
-    {"role": "assistant", "content": "你好👋！我是人工智能助手 ChatGLM3-6B，很高兴见到你，欢迎问我任何问题。"},
+    {"role": "assistant", "content": "你好！有什么我可以帮助你的吗？"},
 ]
 ```
 
-如果其他的模型的创建也可以接收sail.Handle，sail.Engine，tokenizer参数，并且实现了类似`chat_stream(input, history)` 的流式推理接口，则可以替换相应的模型。例如用Qwen进行替换：
+如果其他的模型的创建也可以接收sail.Handle，sail.EngineLLM，tokenizer参数，并且实现了类似`chat_stream(input, history)` 的流式推理接口，则可以替换相应的模型。例如用Qwen进行替换：
 ```python
 client = Qwen(st.session_state.handle, st.session_state.engine, st.session_state.tokenizer)
 ...

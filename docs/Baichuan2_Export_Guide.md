@@ -73,7 +73,7 @@ tar zxvf Baichuan2-7B-Chat.tar.gz
 ```
 
 ### 2.1.2 修改官方代码：
-本例程的`tools`目录下提供了修改好之后的`config.json`和`modeling_chatglm.py`。可以直接替换掉原仓库的文件：
+本例程的`tools`目录下提供了修改好之后的`config.json`和`modeling_baichuan.py`。可以直接替换掉原仓库的文件：
 ```bash
 cp tools/baichuan2-7b/config.json Baichuan2-7B-Chat/
 cp tools/baichuan2-7b/modeling_baichuan.py Baichuan2-7B-Chat/

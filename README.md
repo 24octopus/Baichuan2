@@ -15,7 +15,7 @@ Baichuan2-7B 是开源中英双语对话模型 Baichuan-7B 的第二代版本，
 
 ## 2. 特性
 * 支持BM1684X(x86 PCIe、SoC)
-* 支持FP16、INT8、INT4模型编译和推理
+* 支持INT8、INT4模型编译和推理
 * 支持基于SAIL推理的Python例程
 * 支持多轮对话
 
@@ -37,7 +37,7 @@ sudo cp /data/memedit/DeviceMemoryModificationKit/memory_edit/boot.itb /boot/boo
 sudo reboot
 ```
 > **注意：**
-> 1. tpu总内存为npu/vpu/vpp三者之和，fp16模型应满足tpu内存 >= 12800 MB，int8应满足tpu内存 >= 7168MB，int4应满足tpu内存 >= 4608MB。
+> 1. tpu总内存为npu/vpu/vpp三者之和，int8应满足tpu内存 >= 9216MB，int4应满足tpu内存 >= 6144MB。
 > 2. 更多教程请参考[SoC内存修改工具](https://doc.sophgo.com/sdk-docs/v23.07.01/docs_latest_release/docs/SophonSDK_doc/zh/html/appendix/2_mem_edit_tools.html)
 
 ## 4. 准备模型
@@ -46,7 +46,7 @@ sudo reboot
 
 ​本例程在`scripts`目录下提供了下载脚本`download.sh`
 
-**注意：**在运行前，应该保证存储空间大于23GB。
+**注意：**在运行前，应该保证存储空间大于15GB。
 
 ```bash
 # 安装unzip，若已安装请跳过，非ubuntu系统视情况使用yum或其他方式安装
@@ -59,14 +59,13 @@ chmod -R +x scripts/
 
 ```bash
 ├── docs
-│   └── Baichuan2_Export_Guide.md    #Baichuan2 onnx导出和bmodel编译指南
+│   └── Baichuan2_Export_Guide.md   #Baichuan2 onnx导出和bmodel编译指南
 ├── models
 │   └── BM1684X                     #download.sh下载的bmodel
-│       ├── baichuan2-7b_fp16.bmodel
-│       ├── baichuan2-7b_int4.bmodel
+│       ├── baichuan2-7b_int4_1dev.bmodel
 │       └── baichuan2-7b_int8_1dev.bmodel
 ├── python
-│   ├── baichuan2.py                 #Baichuan2 python推理脚本
+│   ├── baichuan2.py                #Baichuan2 python推理脚本
 │   ├── README.md                   #python例程执行指南
 │   ├── requirements.txt            #python例程的依赖模块
 │   └── token_config                #download.sh下载的tokenizer
@@ -96,11 +95,10 @@ chmod -R +x scripts/
 ## 6. 程序性能测试
 
 这里的测试输入为："请使用C++写一段冒泡排序算法。"
-|    测试平台   |     测试程序       |           测试模型             |first token latency(s)|token per second(tokens/s)| 
-| -----------  | ---------------- | ---------------------------     | --------------------- | ----------------------- | 
-| SE7-32       | baichuan2.py      | baichuan2-7b_f16.bmodel          |    1.408              |    4.067          | 
-| SE7-32       | baichuan2.py      | baichuan2-7b_int8.bmodel         |    1.116              |    8.184          | 
-| SE7-32       | baichuan2.py      | baichuan2-7b_int4.bmodel         |    1.121              |    12.822         | 
+|    测试平台   |     测试程序       |           测试模型              |first token latency(s) |token per second(tokens/s)| 
+| -----------  | ----------------- | ---------------------------     | --------------------- | ----------------------- | 
+| SE7-32       | baichuan2.py      | baichuan2-7b_int8_1dev.bmodel   |    0.847              |    4.774          | 
+| SE7-32       | baichuan2.py      | baichuan2-7b_int4_1dev.bmodel   |    0.837              |    6.841          | 
 
 > **测试说明**：  
 > 1. 性能测试结果具有一定的波动性，建议多次测试取平均值；
