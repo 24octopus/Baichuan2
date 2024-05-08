@@ -27,6 +27,8 @@ python目录下提供了一系列Python例程，具体情况如下：
 
 其中，libsophon需要使用0.5.1版本，相关功能暂未发布，这里暂时提供一个可用的libsophon版本，您可以根据自己的Linux发行版通过下面的命令下载：
 ```bash
+pip3 install dfss --upgrade #安装dfss依赖
+
 #Debian/Ubuntu, x86_64
 python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-driver_0.5.1_amd64.deb
 python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-libsophon_0.5.1_amd64.deb
