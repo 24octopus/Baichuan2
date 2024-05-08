@@ -11,7 +11,7 @@
 ## 1. 简介
 Baichuan2-7B 是开源中英双语对话模型 Baichuan-7B 的第二代版本，关于它的特性，请前往源repo查看：[Baichuan2-7B-Chat](https://huggingface.co/baichuan-inc/Baichuan2-7B-Chat)。本例程对Baichuan2-7B进行移植，使之能在SOPHON BM1684X上进行推理测试。
 
-该例程支持在V23.07.01(libsophon_0.4.9)及以上的SDK上运行，支持在插有1684X加速卡(SC7系列)的x86主机上运行，也可以在1684X SoC设备（如SE7、SM7、Airbox等）上运行。在SoC上运行需要额外进行环境配置，请参照[运行环境准备](#3-运行环境准备)完成环境部署。
+该例程支持在V23.07.01(libsophon_0.5.1)及以上的SDK上运行，支持在插有1684X加速卡(SC7系列)的x86主机上运行，也可以在1684X SoC设备（如SE7、SM7、Airbox等）上运行。在SoC上运行需要额外进行环境配置，请参照[运行环境准备](#3-运行环境准备)完成环境部署。
 
 ## 2. 特性
 * 支持BM1684X(x86 PCIe、SoC)
@@ -69,7 +69,7 @@ chmod -R +x scripts/
 │   ├── README.md                   #python例程执行指南
 │   ├── requirements.txt            #python例程的依赖模块
 │   └── token_config                #download.sh下载的tokenizer
-│       ├── tokenization_chatglm.py
+│       ├── tokenization_baichuan.py
 │       ├── tokenizer_config.json
 │       └── tokenizer.model
 ├── README.md                       #Baichuan2例程指南
@@ -79,7 +79,7 @@ chmod -R +x scripts/
 └── tools
     ├── baichuan2-7b                 #修改过的Baichuan2源码
     │   ├── config.json
-    │   └── modeling_chatglm.py
+    │   └── modeling_baichuan.py
     └── export_onnx.py              #Baichuan2导出onnx脚本。
 ```
 
