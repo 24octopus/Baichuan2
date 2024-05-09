@@ -83,8 +83,13 @@ pip3 install -r python/requirements.txt
 pip3 install dfss --upgrade
 python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/sail/sophon_arm-3.8.0-py3-none-any.whl #arm soc, py38
 ```
-如果您需要其他版本的sophon-sail，或者遇到glibc版本问题，可以通过以下命令下载源码，并参考[sophon-sail编译安装指南](https://doc.sophgo.com/sdk-docs/v23.07.01/docs_latest_release/docs/sophon-sail/docs/zh/html/1_build.html#)自己编译sophon-sail。
+如果您需要其他版本的sophon-sail，或者遇到glibc版本问题，可以通过以下命令下载libsophon安装包和sophon-sail源码，并参考[libsophon用户手册](https://doc.sophgo.com/sdk-docs/v23.09.01-lts/docs_latest_release/docs/libsophon/guide/html/1_install.html#)自己安装libsophon，然后参考[sophon-sail编译安装指南](https://doc.sophgo.com/sdk-docs/v23.07.01/docs_latest_release/docs/sophon-sail/docs/zh/html/1_build.html#)自己编译sophon-sail。
 ```bash
+#libsophon安装包
+python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/libsophon_soc_0.5.1_aarch64.tar.gz
+tar xvf libsophon_soc_0.5.1_aarch64.tar.gz
+
+#sophon-sail源码
 python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/sail/sophon-sail_3.8.0.tar.gz
 tar xvf sophon-sail_3.8.0.tar.gz
 ```
