@@ -31,11 +31,11 @@ pip3 install dfss --upgrade  #安装dfss依赖
 python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/libsophon.tar.gz  #下载libsophon软件包
 tar xvf libsophon.tar.gz
 ```
-下载完libsophon后，可参考[libsophon用户手册](https://doc.sophgo.com/sdk-docs/v23.09.01-lts/docs_latest_release/docs/libsophon/guide/html/1_install.html#)，根据您的Linux发行版进行安装。
+下载完libsophon后，可参考[libsophon用户手册](https://doc.sophgo.com/sdk-docs/v23.09.01-lts/docs_latest_release/docs/libsophon/guide/html/1_install.html#)，根据对应的Linux发行版进行安装。
 
 此外您还需要安装其他第三方库：
 ```bash
-pip3 install -r python/requirements.txt
+pip3 install -r python/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 您还需要安装sophon-sail，由于本例程需要的sophon-sail版本为3.8.0，相关功能暂未发布，这里暂时提供一个可用的sophon-sail版本，x86 PCIe环境可以通过下面的命令下载：
 ```bash

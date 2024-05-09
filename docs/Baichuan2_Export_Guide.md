@@ -89,13 +89,13 @@ cp tools/baichuan2-7b/modeling_baichuan.py $BAICHUAN2_PATH
 
 ### 2.2.3 导出onnx
 
-- 指定Baichuan2-7B-Chat官方仓库的python路径
+- 指定Baichuan2-7B-Chat官方仓库的python路径：
 
 ```bash
 export PYTHONPATH=$BAICHUAN2_PATH:$PYTHONPATH
 ```
 
-- 导出所有onnx模型，如果过程中提示缺少某些组件，直接**pip install**安装组件即可
+- 安装所需的第三方库，然后导出所有onnx模型：
 
 ```bash
 pip install -r python/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
