@@ -25,32 +25,13 @@ python目录下提供了一系列Python例程，具体情况如下：
 ### 1.1 x86/arm PCIe平台
 如果您在x86/arm平台安装了PCIe加速卡（如SC系列加速卡），并使用它测试本例程，您需要安装libsophon、sophon-opencv、sophon-ffmpeg，具体请参考[x86-pcie平台的开发和运行环境搭建](../../../docs/Environment_Install_Guide.md#3-x86-pcie平台的开发和运行环境搭建)或[arm-pcie平台的开发和运行环境搭建](../../../docs/Environment_Install_Guide.md#5-arm-pcie平台的开发和运行环境搭建)。
 
-其中，libsophon需要使用0.5.1版本，相关功能暂未发布，这里暂时提供一个可用的libsophon版本，您可以根据自己的Linux发行版通过下面的命令下载：
+其中，libsophon需要使用0.5.1版本，相关功能暂未发布，这里暂时提供一个可用的libsophon版本，您可以通过下面的命令下载：
 ```bash
-pip3 install dfss --upgrade #安装dfss依赖
-
-#Debian/Ubuntu, x86_64
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-driver_0.5.1_amd64.deb
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-libsophon_0.5.1_amd64.deb
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-libsophon-dev_0.5.1_amd64.deb
-
-#Debian/Ubuntu, arm64
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-driver_0.5.1_arm64.deb
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-libsophon_0.5.1_arm64.deb
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-libsophon-dev_0.5.1_arm64.deb
-
-#Centos, x86_64
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-driver_0.5.1-1.riscv64.rpm
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-libsophon_0.5.1-1.riscv64.rpm
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/sophon-libsophon-dev_0.5.1-1.riscv64.rpm
-
-#其它Linux系统, x86_64
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/libsophon_0.5.1_x86_64.tar.gz
-
-#其它Linux系统, arm64
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/libsophon_0.5.1_aarch64.tar.gz
+pip3 install dfss --upgrade  #安装dfss依赖
+python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/libsophon/libsophon.tar.gz  #下载libsophon软件包
+tar xvf libsophon.tar.gz
 ```
-下载完对应系统的libsophon后，可参考[libsophon用户手册](https://doc.sophgo.com/sdk-docs/v23.09.01-lts/docs_latest_release/docs/libsophon/guide/html/1_install.html#)进行安装。
+下载完libsophon后，可参考[libsophon用户手册](https://doc.sophgo.com/sdk-docs/v23.09.01-lts/docs_latest_release/docs/libsophon/guide/html/1_install.html#)，根据您的Linux发行版进行安装。
 
 此外您还需要安装其他第三方库：
 ```bash
@@ -58,8 +39,6 @@ pip3 install -r python/requirements.txt
 ```
 您还需要安装sophon-sail，由于本例程需要的sophon-sail版本为3.8.0，相关功能暂未发布，这里暂时提供一个可用的sophon-sail版本，x86 PCIe环境可以通过下面的命令下载：
 ```bash
-pip3 install dfss --upgrade #安装dfss依赖
-
 #x86 pcie, py38
 python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/sail/sophon-3.8.0-py3-none-any.whl 
 pip3 install sophon-3.8.0-py3-none-any.whl

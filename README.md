@@ -97,8 +97,8 @@ chmod -R +x scripts/
 这里的测试输入为："请使用C++写一段冒泡排序算法。"
 |    测试平台   |     测试程序       |           测试模型              |first token latency(s) |token per second(tokens/s)| 
 | -----------  | ----------------- | ---------------------------     | --------------------- | ----------------------- | 
-| SE7-32       | baichuan2.py      | baichuan2-7b_int8_1dev.bmodel   |    0.847              |    4.774          | 
-| SE7-32       | baichuan2.py      | baichuan2-7b_int4_1dev.bmodel   |    0.837              |    6.841          | 
+| SE7-32       | baichuan2.py      | baichuan2-7b_int8_1dev.bmodel   |    0.825              |    5.510          | 
+| SE7-32       | baichuan2.py      | baichuan2-7b_int4_1dev.bmodel   |    0.817              |    7.603          | 
 
 > **测试说明**：  
 > 1. 性能测试结果具有一定的波动性，建议多次测试取平均值；
