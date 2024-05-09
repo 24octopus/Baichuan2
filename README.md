@@ -38,7 +38,7 @@ sudo reboot
 ```
 > **注意：**
 > 1. tpu总内存为npu/vpu/vpp三者之和，int8应满足tpu内存 >= 9216MB，int4应满足tpu内存 >= 6144MB。
-> 2. 更多教程请参考[SoC内存修改工具](https://doc.sophgo.com/sdk-docs/v23.07.01/docs_latest_release/docs/SophonSDK_doc/zh/html/appendix/2_mem_edit_tools.html)
+> 2. 更多教程请参考[SoC内存修改工具](https://doc.sophgo.com/sdk-docs/v23.09.01-lts/docs_latest_release/docs/SophonSDK_doc/zh/html/appendix/2_mem_edit_tools.html)
 
 ## 4. 准备模型
 该模型目前只支持在1684X上运行，已提供编译好的bmodel。
