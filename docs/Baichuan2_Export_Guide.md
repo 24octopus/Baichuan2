@@ -98,7 +98,8 @@ export PYTHONPATH=$BAICHUAN2_PATH:$PYTHONPATH
 - 导出所有onnx模型，如果过程中提示缺少某些组件，直接**pip install**安装组件即可
 
 ```bash
-python3 tools/export_onnx.py --model_path $BAICHUAN2_PATH --onnx_path ./models/onnx
+pip install -r python/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+python3 tools/export_onnx.py --model_path $BAICHUAN2_PATH
 ```
 此时有大量onnx模型被导出到本例程中`Baichuan2/models/onnx`的目录。
 

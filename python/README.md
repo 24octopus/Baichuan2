@@ -55,7 +55,7 @@ tar xvf sophon-sail_3.8.0.tar.gz
 
 此外您还需要安装其他第三方库：
 ```bash
-pip3 install -r python/requirements.txt
+pip3 install -r python/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 由于本例程需要的sophon-sail版本为3.8.0，这里提供一个可用的sophon-sail whl包，SoC环境可以通过下面的命令下载：
 ```bash

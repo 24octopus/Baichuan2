@@ -15,7 +15,6 @@ from transformers.generation.utils import GenerationConfig
 import numpy as np
 import argparse
 
-folder = f"./tmp/onnx"
 parser = argparse.ArgumentParser(description='export onnx.')
 parser.add_argument('--model_path', type=str, help='path to the torch model.')
 parser.add_argument('--seq_length', type=int, default=512, help="sequence length")
@@ -23,7 +22,7 @@ parser.add_argument('--seq_length', type=int, default=512, help="sequence length
 args = parser.parse_args()
 
 model_path = args.model_path
-folder = "./tmp"
+folder = "./models/onnx"
 
 origin_model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True).eval()
 origin_model.generation_config = GenerationConfig.from_pretrained(model_path)
