@@ -7,7 +7,7 @@
     * [1.2 SoC平台](#12-soc平台)
 * [2. 推理测试](#2-推理测试)
     * [2.1 参数说明](#21-参数说明)
-    * [2.2 测试图片](#22-测试图片)
+    * [2.2 使用方式](#22-使用方式)
 * [3. 支持多会话的Web Demo](#3-支持多会话的Web-Demo)
     * [3.1 使用方式](#31-使用方式)
     * [3.2 程序流程图](#32-程序流程图)
@@ -40,7 +40,7 @@ pip3 install -r python/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/sim
 您还需要安装sophon-sail，由于本例程需要的sophon-sail版本为3.8.0，相关功能暂未发布，这里暂时提供一个可用的sophon-sail版本，x86 PCIe环境可以通过下面的命令下载：
 ```bash
 #x86 pcie, py38
-python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/sail/sophon-3.8.0-py3-none-any.whl 
+python3 -m dfss --url=open@sophgo.com:sophon-demo/baichuan2/sail/sophon-3.8.0-py3-none-any.whl
 pip3 install sophon-3.8.0-py3-none-any.whl
 ```
 如果您需要其他版本的sophon-sail，或者遇到glibc版本问题（pcie环境常见），可以通过以下命令下载源码，并参考[sophon-sail编译安装指南](https://doc.sophgo.com/sdk-docs/v23.07.01/docs_latest_release/docs/sophon-sail/docs/zh/html/1_build.html#)自己编译sophon-sail。
@@ -88,7 +88,7 @@ usage: baichuan2.py [--bmodel BMODEL] [--token TOKEN] [--dev_ids DEV_ID]
 ### 2.2 使用方式
 
 ```bash
-python3 python/baichuan2.py --bmodel models/BM1684X/baichuan2-7b_int8_1dev.bmodel --token python/token_config --dev_ids 0 
+python3 python/baichuan2.py --bmodel models/BM1684X/baichuan2-7b_int8_1dev.bmodel --token python/token_config --dev_ids 0
 ```
 在读入模型后会显示"Question:"，然后输入就可以了。模型的回答会出现在"Answer"中。结束对话请输入"exit"。
 
@@ -98,7 +98,7 @@ python3 python/baichuan2.py --bmodel models/BM1684X/baichuan2-7b_int8_1dev.bmode
 ### 3.1 使用方式
 首先安装第三方库
 ```bash
-pip3 install -r python/requirements.txt
+pip3 install -r python/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 然后通过streamlit运行web_demo.py即可运行一个web_server
 

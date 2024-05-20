@@ -11,7 +11,7 @@
 ## 1. 简介
 Baichuan2-7B 是开源中英双语对话模型 Baichuan-7B 的第二代版本，关于它的特性，请前往源repo查看：[Baichuan2-7B-Chat](https://huggingface.co/baichuan-inc/Baichuan2-7B-Chat)。本例程对Baichuan2-7B进行移植，使之能在SOPHON BM1684X上进行推理测试。
 
-该例程支持在V23.07.01(libsophon_0.5.1)及以上的SDK上运行，支持在插有1684X加速卡(SC7系列)的x86主机上运行，也可以在1684X SoC设备（如SE7、SM7、Airbox等）上运行。在SoC上运行需要额外进行环境配置，请参照[运行环境准备](#3-运行环境准备)完成环境部署。
+该例程支持在V24.04.01(libsophon_0.5.1)及以上的SDK上运行，相关版本尚未在官网发布，本例程提供了一个可用的版本，请参考[环境准备](./python/README.md#1-环境准备)。支持在插有1684X加速卡(SC7系列)的x86主机上运行，也可以在1684X SoC设备（如SE7、SM7、Airbox等）上运行。在SoC上运行需要额外进行环境配置，请参照[运行环境准备](#3-运行环境准备)完成环境部署。
 
 ## 2. 特性
 * 支持BM1684X(x86 PCIe、SoC)
@@ -73,7 +73,7 @@ chmod -R +x scripts/
 │       ├── tokenizer_config.json
 │       └── tokenizer.model
 ├── README.md                       #Baichuan2例程指南
-├── scripts                         
+├── scripts
 │   ├── download.sh                 #下载脚本
 │   └── gen_bmodel.sh               #模型编译脚本
 └── tools
@@ -95,12 +95,12 @@ chmod -R +x scripts/
 ## 6. 程序性能测试
 
 这里的测试输入为："请使用C++写一段冒泡排序算法。"
-|    测试平台   |     测试程序       |           测试模型              |first token latency(s) |token per second(tokens/s)| 
-| -----------  | ----------------- | ---------------------------     | --------------------- | ----------------------- | 
-| SE7-32       | baichuan2.py      | baichuan2-7b_int8_1dev.bmodel   |    0.825              |    5.510          | 
-| SE7-32       | baichuan2.py      | baichuan2-7b_int4_1dev.bmodel   |    0.817              |    7.603          | 
+|    测试平台   |     测试程序      |           测试模型              |first token latency(s) |token per second(tokens/s)|
+| -----------  | ----------------- | ---------------------------    | --------------------- | -----------------------  |
+| SE7-32       | baichuan2.py      | baichuan2-7b_int8_1dev.bmodel  |        0.825          |         5.510            |
+| SE7-32       | baichuan2.py      | baichuan2-7b_int4_1dev.bmodel  |        0.817          |         7.603            |
 
-> **测试说明**：  
+> **测试说明**：
 > 1. 性能测试结果具有一定的波动性，建议多次测试取平均值；
 > 2. SE7-32的主控处理器为8核 ARM A53 42320 DMIPS @2.3GHz，PCIe上的性能由于处理器的不同可能存在较大差异；
-> 3. 这里使用的SDK版本是V23.07.01；
+> 3. 这里使用的SDK版本是V24.04.01。

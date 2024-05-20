@@ -4,7 +4,7 @@
 
 Baichuan2模型导出需要依赖[Baichuan2官方仓库](https://huggingface.co/baichuan-inc/Baichuan2-7B-Chat)。onnx模型导出和转bmodel模型推荐在mlir部分提供的docker中完成。
 
-**注意：** 
+**注意：**
 
 - 编译模型需要在x86主机完成。
 - Baichuan2-7B官方库30G左右，转模型需要保证运行内存至少32G以上，导出onnx模型需要存储空间80G以上，fp16模型转换需要存储空间200G以上，int8和int4模型需要的空间会更少。
@@ -27,7 +27,7 @@ sudo groupadd docker
 # 将当前用户加入docker组
 sudo usermod -aG docker $USER
 # 切换当前会话到新group或重新登录重启X会话
-newgrp docker​ 
+newgrp docker​
 ```
 > **提示**：需要logout系统然后重新登录，再使用docker就不需要sudo了。
 
@@ -42,12 +42,12 @@ tar zxvf tpu-mlir_v1.6.100-g882a3523-20240102.tar.gz
 
 ### 2.1.3. 创建并进入docker
 
-TPU-MLIR使用的docker是sophgo/tpuc_dev:v3.1, docker镜像和tpu-mlir有绑定关系，少数情况下有可能更新了tpu-mlir，需要新的镜像。
+TPU-MLIR使用的docker是sophgo/tpuc_dev:v3.2, docker镜像和tpu-mlir有绑定关系，少数情况下有可能更新了tpu-mlir，需要新的镜像。
 ```bash
-docker pull sophgo/tpuc_dev:v3.1
+docker pull sophgo/tpuc_dev:v3.2
 # 这里将本级目录映射到docker内的/workspace目录,用户需要根据实际情况将demo的目录映射到docker里面
 # myname只是举个名字的例子, 请指定成自己想要的容器的名字
-docker run --name myname -v $PWD:/workspace -it sophgo/tpuc_dev:v3.1
+docker run --name myname -v $PWD:/workspace -it sophgo/tpuc_dev:v3.2
 # 此时已经进入docker，并在/workspace目录下
 # 初始化软件环境
 cd /workspace/tpu-mlir_vx.y.z-<hash>-<date>
@@ -76,11 +76,12 @@ tar zxvf Baichuan2-7B-Chat.tar.gz
 
 下载完Baichuan2-7B-Chat官方库后，您还需要设置`BAICHUAN2_PATH`环境变量，模型导出时会使用到。
 ```bash
-export BAICHUAN2_PATH=$(pwd)/Baichuan2-7B-Chat
+export BAICHUAN2_PATH=$PWD/Baichuan2-7B-Chat
 ```
 
 ### 2.2.2 修改官方代码：
-进入本例程Baichuan2。本例程的`tools`目录下提供了修改好之后的`config.json`和`modeling_baichuan.py`。可以直接替换掉原仓库的文件：
+进入本例程Baichuan2目录。
+本例程的`tools`目录下提供了修改好之后的`config.json`和`modeling_baichuan.py`，可以直接替换掉原仓库的文件：
 ```bash
 cp tools/baichuan2-7b/config.json $BAICHUAN2_PATH
 cp tools/baichuan2-7b/modeling_baichuan.py $BAICHUAN2_PATH
