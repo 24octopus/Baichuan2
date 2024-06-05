@@ -121,18 +121,21 @@ class Baichuan2:
     def _make_context(self, input_str, history=[], role="user"):
         B_INST, E_INST = "<reserved_106>", "<reserved_107>"
         input_ids = []
+        history = [{"role": "system", "content": "请用英文回答"}]
         for item in history:
             content = item["content"]
-            if item["role"] == "user" or item["role"] == "assistant":
+            if item["role"] == "user":
                 encoded = self.sp.encode(f"{B_INST}{content.strip()}{E_INST}")
+            elif item["role"] == "assistant" or item["role"] == "system":
+                encoded = self.sp.encode(content.strip())
             else:
-                raise ValueError(f"role should be in {{'user', 'assistant'}} but we get {item['role']}")
+                raise ValueError(f"role should be in {{'system', 'user', 'assistant'}} but we get {item['role']}")
             # 添加编码后的消息，移除首个token（假设为bos token）
             input_ids.extend(encoded[1:])
-        if role == "user" or role == "assistant":
+        if role == "user" or role == "assistant" or item["role"] == "system":
             input_ids.extend(self.sp.encode(f"{B_INST}{input_str.strip()}{E_INST}")[1:])
         else:
-            raise ValueError(f"role should be in {{'user', 'assistant'}} but we get {role}")
+            raise ValueError(f"role should be in {{'system', 'user', 'assistant'}} but we get {role}")
         return input_ids
 
 
