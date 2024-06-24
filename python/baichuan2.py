@@ -121,7 +121,6 @@ class Baichuan2:
     def _make_context(self, input_str, history=[], role="user"):
         B_INST, E_INST = "<reserved_106>", "<reserved_107>"
         input_ids = []
-        history = []
         for item in history:
             content = item["content"]
             if item["role"] == "user":
